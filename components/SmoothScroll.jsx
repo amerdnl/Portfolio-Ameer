@@ -28,13 +28,9 @@ export default function SmoothScroll({ children }) {
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
 
-    // Mark body so we can switch to custom cursor styling
-    document.body.classList.add("has-custom-cursor");
-
     return () => {
       gsap.ticker.remove(raf);
       lenis.destroy();
-      document.body.classList.remove("has-custom-cursor");
     };
   }, []);
 

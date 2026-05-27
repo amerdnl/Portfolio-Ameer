@@ -47,14 +47,6 @@ html.lenis body {
   color: #0a0a08;
 }
 
-/* Hide native cursor on desktop; show custom one. */
-@media (hover: hover) and (pointer: fine) {
-  body.has-custom-cursor,
-  body.has-custom-cursor * {
-    cursor: none !important;
-  }
-}
-
 /* Subtle film grain overlay */
 .grain::after {
   content: "";
