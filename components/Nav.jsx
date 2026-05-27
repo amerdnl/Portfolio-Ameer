@@ -6,7 +6,6 @@ import clsx from "clsx";
 const LINKS = [
   { id: "top",     label: "Home" },
   { id: "works",   label: "Works" },
-  { id: "about",   label: "Studio" },
   { id: "process", label: "Process" },
   { id: "contact", label: "Contact" },
 ];

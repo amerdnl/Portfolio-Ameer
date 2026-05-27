@@ -59,7 +59,7 @@ export default function Contact() {
           {/* Marker */}
           <div className="md:col-span-12">
             <p className="text-[11px] uppercase tracking-[0.32em] text-accent">
-              ⟶ &nbsp; 04 &nbsp;/ &nbsp; Contact
+              ⟶ &nbsp; 03 &nbsp;/ &nbsp; Contact
             </p>
           </div>
 
@@ -128,9 +128,8 @@ export default function Contact() {
         {/* Footer */}
         <footer className="grid grid-cols-2 gap-y-8 py-10 text-[11px] uppercase tracking-[0.28em] text-ink-100 md:grid-cols-4">
           <div>
-            <p className="text-ink-0">Studio</p>
-            <p className="mt-2">Persiaran Setia Murni, Studio 3B</p>
-            <p>40170 Shah Alam, Selangor</p>
+            <p className="text-ink-0">Based in</p>
+            <p className="mt-2">Shah Alam</p>
           </div>
           <div>
             <p className="text-ink-0">Hours</p>
@@ -138,12 +137,12 @@ export default function Contact() {
               <span className="h-1 w-1 animate-blink rounded-full bg-accent" />
               Shah Alam · {time || "—"}
             </p>
-            <p>Mon — Fri · By appointment</p>
+            <p>Mon — Sun · By appointment</p>
           </div>
           <div>
             <p className="text-ink-0">Index</p>
-            <p className="mt-2">Works · About</p>
-            <p>Process · Voices</p>
+            <p className="mt-2">Works · Process</p>
+            <p>Contact</p>
           </div>
           <div className="md:text-right">
             <p className="text-ink-0">© 2026</p>

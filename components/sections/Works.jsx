@@ -38,7 +38,9 @@ export default function Works() {
           );
         }
 
-        // Meta fade-in — synchronised with the card's directional reveal.
+        // Meta fade-in — stays visible across the whole reading zone
+        // so the title doesn't disappear while the image still sits
+        // in the viewer's gaze (matches the image's hold-phase reveal).
         if (meta) {
           gsap.fromTo(
             meta,
@@ -47,12 +49,11 @@ export default function Works() {
               y: 0,
               opacity: 1,
               duration: 1.1,
-              delay: 0.15,
               ease: "power3.out",
               scrollTrigger: {
                 trigger: card,
-                start: "top 82%",
-                end:   "top 25%",
+                start: "top 80%",
+                end:   "bottom 20%",
                 toggleActions: "play reverse play reverse",
               },
             }
@@ -112,7 +113,6 @@ export default function Works() {
               <RevealSide
                 key={w.id}
                 side={side}
-                delay={0.05}
                 className={`work-card group relative ${layouts[i % layouts.length]}`}
               >
                 <div data-cursor="hover">

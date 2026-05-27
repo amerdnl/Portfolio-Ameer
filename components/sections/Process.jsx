@@ -21,7 +21,8 @@ export default function Process() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Step text — bidirectional rise/fade keyed to scroll direction
+      // Step text — bidirectional rise/fade. End is held wide so the
+      // text doesn't slide away while the user is still reading it.
       const steps = gsap.utils.toArray(".process-step");
       steps.forEach((step) => {
         gsap.fromTo(
@@ -35,7 +36,7 @@ export default function Process() {
             scrollTrigger: {
               trigger: step,
               start: "top 84%",
-              end:   "top 28%",
+              end:   "bottom 15%",
               toggleActions: "play reverse play reverse",
             },
           }
@@ -74,7 +75,7 @@ export default function Process() {
         <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="mb-6 text-[11px] uppercase tracking-[0.32em] text-accent">
-              ⟶ &nbsp; 03 &nbsp;/ &nbsp; Process
+              ⟶ &nbsp; 02 &nbsp;/ &nbsp; Process
             </p>
             <RevealText
               as="h2"
@@ -129,7 +130,6 @@ export default function Process() {
                     <RevealSide
                       key={src}
                       side={side}
-                      delay={(i % 2) * 0.08}
                       className={`relative w-full ${offset}`}
                     >
                       <div
