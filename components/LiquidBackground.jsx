@@ -71,32 +71,34 @@ export default function LiquidBackground() {
         // Resolution — balance between fidelity and frame-rate
         simResolution:       128,
         dyeResolution:       1024,
-        // Dissipation — how quickly the wake fades. Higher = shorter trail.
-        densityDissipation:  2.6,
-        velocityDissipation: 1.9,
+        // Dissipation — how quickly the wake fades. Lower = longer trail.
+        densityDissipation:  2.2,
+        velocityDissipation: 1.7,
         // Pressure solver
         pressure:            0.82,
         pressureIterations:  20,
         // Vorticity / swirl — gives the wake those organic curls
-        curl:                26,
-        // Splat shape & strength
-        splatRadius:         0.16,
-        splatForce:          5500,
+        curl:                28,
+        // Splat shape & strength — slightly wider for premium presence
+        splatRadius:         0.2,
+        splatForce:          6000,
         // Look & feel
         shading:             true,
         colorful:            false,
         colorPalette:        PALETTE,
         transparent:         true,
-        brightness:          0.5,
+        // Brightness bumped — the wake now reads clearly across the
+        // hero photograph and on every section background.
+        brightness:          0.72,
         // We feed splats ourselves, so disable the lib's built-in hover
         // (it would bind to the container and we want pointer-events:none).
         hover:               false,
-        // Soft bloom for that premium liquid-gold glow
+        // Bloom turned up for that premium liquid-gold glow
         bloom:               true,
         bloomIterations:     8,
         bloomResolution:     256,
-        bloomIntensity:      0.55,
-        bloomThreshold:      0.55,
+        bloomIntensity:      0.72,
+        bloomThreshold:      0.5,
         bloomSoftKnee:       0.7,
         sunrays:             false,
       });

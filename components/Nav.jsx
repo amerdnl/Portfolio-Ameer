@@ -11,11 +11,15 @@ const LINKS = [
 ];
 
 export default function Nav() {
-  const [scrolled, setScrolled] = useState(false);
+  // `visible` flips true once the user has scrolled past most of the
+  // hero — keeps the first screen completely chrome-free.
+  const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => {
+      setVisible(window.scrollY > window.innerHeight * 0.6);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -36,8 +40,10 @@ export default function Nav() {
   return (
     <header
       className={clsx(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-700 ease-cinematic",
-        scrolled ? "py-4" : "py-7"
+        "fixed inset-x-0 top-0 z-50 py-4 transition-all duration-[900ms] ease-cinematic",
+        visible
+          ? "translate-y-0 opacity-100"
+          : "pointer-events-none -translate-y-3 opacity-0"
       )}
     >
       <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 md:px-10">

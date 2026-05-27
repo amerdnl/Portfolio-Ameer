@@ -52,8 +52,8 @@ export default function Contact() {
       className="relative overflow-hidden bg-ink-900 pt-28 md:pt-44"
     >
       <div className="mx-auto max-w-[1600px] px-6 md:px-10">
-        {/* Oversized chapter word — drifts in from the right */}
-        <SectionTitle from="right">CONTACT</SectionTitle>
+        {/* Oversized centered chapter word — slow scrub-tied entrance */}
+        <SectionTitle>CONTACT</SectionTitle>
 
         <div className="grid grid-cols-1 gap-y-16 md:grid-cols-12">
           {/* Marker */}

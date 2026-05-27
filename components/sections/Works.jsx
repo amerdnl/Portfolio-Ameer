@@ -71,8 +71,8 @@ export default function Works() {
       className="relative bg-ink-900 py-28 md:py-40"
     >
       <div className="mx-auto max-w-[1600px] px-6 md:px-10">
-        {/* Oversized chapter word — drifts in from the left as you scroll */}
-        <SectionTitle from="left">SELECTED</SectionTitle>
+        {/* Oversized centered chapter word — slow scrub-tied entrance */}
+        <SectionTitle>SELECTED</SectionTitle>
 
         {/* Section header */}
         <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">

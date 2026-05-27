@@ -5,7 +5,7 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PROCESS, IMG_META } from "@/lib/data";
-import { RevealText, ImageReveal } from "@/components/Reveal";
+import { RevealText } from "@/components/Reveal";
 import TiltCard from "@/components/TiltCard";
 import SectionTitle from "@/components/SectionTitle";
 
@@ -109,8 +109,8 @@ export default function Process() {
       className="relative overflow-hidden bg-ink-900 py-28 md:py-40"
     >
       <div className="mx-auto max-w-[1600px] px-6 md:px-10">
-        {/* Oversized chapter word — drifts in from the left */}
-        <SectionTitle from="left">PROCESS</SectionTitle>
+        {/* Oversized centered chapter word — slow scrub-tied entrance */}
+        <SectionTitle>PROCESS</SectionTitle>
 
         {/* Header */}
         <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
@@ -171,25 +171,28 @@ export default function Process() {
                       className={`bts-tile relative w-full ${offset}`}
                       style={{ willChange: "transform, opacity" }}
                     >
+                      {/* No ImageReveal mask here — the BTS tiles
+                          render directly so they're guaranteed
+                          visible the moment they enter the viewport.
+                          Mask-based reveals were re-hiding tiles in
+                          this sticky column. */}
                       <div
-                        className="relative w-full overflow-hidden"
+                        className="relative w-full overflow-hidden bg-ink-700"
                         style={{ aspectRatio: `${meta.w} / ${meta.h}` }}
                       >
                         <TiltCard intensity={6} className="absolute inset-0">
-                          <ImageReveal className="absolute inset-0 bg-ink-700">
-                            <div
-                              className="bts-img absolute inset-0 will-change-transform"
-                              style={{ transform: "scale(1.08)" }}
-                            >
-                              <Image
-                                src={src}
-                                alt={`Behind the scenes ${i + 1}`}
-                                fill
-                                sizes="(min-width: 768px) 22vw, 45vw"
-                                className="object-cover"
-                              />
-                            </div>
-                          </ImageReveal>
+                          <div
+                            className="bts-img absolute inset-0 will-change-transform"
+                            style={{ transform: "scale(1.08)" }}
+                          >
+                            <Image
+                              src={src}
+                              alt={`Behind the scenes ${i + 1}`}
+                              fill
+                              sizes="(min-width: 768px) 22vw, 45vw"
+                              className="object-cover"
+                            />
+                          </div>
                         </TiltCard>
                       </div>
                     </div>
