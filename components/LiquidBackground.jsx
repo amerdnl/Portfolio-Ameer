@@ -103,10 +103,6 @@ export default function LiquidBackground() {
         sunrays:             false,
       });
       sim.start();
-      // Seed the field with a handful of random splats so the fluid
-      // is alive from the first frame — viewer doesn't need to move
-      // the mouse to see the effect.
-      sim.multipleSplats(6);
       window.addEventListener("mousemove", onMove, { passive: true });
     });
 

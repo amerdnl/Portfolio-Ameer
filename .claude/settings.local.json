@@ -12,7 +12,10 @@
       "Bash(cp \"/Users/ameerdanial/portfolio picture/\"*.jpg \"/Users/ameerdanial/Portfolio Ameer/public/\" && echo \"copied\" && ls \"/Users/ameerdanial/Portfolio Ameer/public/\")",
       "Bash(ls -t ~/Downloads/*.jpg ~/Downloads/*.jpeg ~/Downloads/*.png ~/Desktop/*.jpg ~/Desktop/*.jpeg 2>/dev/null | head -10)",
       "Bash(ls -lt ~/Downloads/ | head -10 && echo \"---\" && ls -lt ~/Desktop/ | head -10)",
-      "Bash(ls -lt \"/Users/ameerdanial/portfolio picture/\" && echo \"---\" && find ~/Pictures -name \"*.jpg\" -newer \"/Users/ameerdanial/portfolio picture/DSC08884.jpg\" 2>/dev/null | head -10)"
+      "Bash(ls -lt \"/Users/ameerdanial/portfolio picture/\" && echo \"---\" && find ~/Pictures -name \"*.jpg\" -newer \"/Users/ameerdanial/portfolio picture/DSC08884.jpg\" 2>/dev/null | head -10)",
+      "Bash(git add *)",
+      "Bash(git rm *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
