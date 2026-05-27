@@ -4,16 +4,16 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { PROCESS } from "@/lib/data";
-import { RevealText, ImageReveal } from "@/components/Reveal";
+import { PROCESS, IMG_META } from "@/lib/data";
+import { RevealText, ImageReveal, RevealSide } from "@/components/Reveal";
 import TiltCard from "@/components/TiltCard";
 import SectionTitle from "@/components/SectionTitle";
 
 const BTS = [
-  "/DSC08704.jpg",
-  "/DSC08576.jpg",
-  "/DSC08590.jpg",
-  "/DSC08556.jpg",
+  "/DSC07670.jpg",   // landscape — left column
+  "/DSC08556.jpg",   // landscape — right column
+  "/DSC08590.jpg",   // landscape — left column
+  "/DSC07674.jpg",   // portrait  — right column
 ];
 
 export default function Process() {
@@ -21,31 +21,37 @@ export default function Process() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Sticky number rotates / fades per step
+      // Step text — bidirectional rise/fade keyed to scroll direction
       const steps = gsap.utils.toArray(".process-step");
-      steps.forEach((step, i) => {
+      steps.forEach((step) => {
         gsap.fromTo(
           step,
-          { opacity: 0, y: 60 },
+          { opacity: 0, y: 50 },
           {
             opacity: 1,
             y: 0,
-            duration: 1.3,
+            duration: 1.2,
             ease: "power3.out",
-            scrollTrigger: { trigger: step, start: "top 82%" },
+            scrollTrigger: {
+              trigger: step,
+              start: "top 84%",
+              end:   "top 28%",
+              toggleActions: "play reverse play reverse",
+            },
           }
         );
       });
 
-      // BTS images parallax
+      // BTS images — gentle vertical parallax (the directional slide is
+      // handled by the RevealSide wrapper around each tile).
       gsap.utils.toArray(".bts-img").forEach((el, i) => {
         gsap.to(el, {
-          yPercent: i % 2 === 0 ? -15 : 12,
+          yPercent: i % 2 === 0 ? -10 : 8,
           ease: "none",
           scrollTrigger: {
             trigger: el,
             start: "top bottom",
-            end: "bottom top",
+            end:   "bottom top",
             scrub: true,
           },
         });
@@ -112,27 +118,44 @@ export default function Process() {
           <div className="mt-16 md:col-span-5 md:col-start-8 md:mt-0">
             <div className="md:sticky md:top-28">
               <div className="grid grid-cols-2 gap-4">
-                {BTS.map((src, i) => (
-                  <TiltCard
-                    key={src}
-                    intensity={6}
-                    className={`relative w-full ${
-                      i % 2 === 0 ? "aspect-[3/4]" : "aspect-[4/5] mt-10"
-                    }`}
-                  >
-                    <ImageReveal className="absolute inset-0 bg-ink-700">
-                      <div className="bts-img absolute inset-0 will-change-transform">
-                        <Image
-                          src={src}
-                          alt={`Behind the scenes ${i + 1}`}
-                          fill
-                          sizes="(min-width: 768px) 25vw, 50vw"
-                          className="object-cover"
-                        />
+                {BTS.map((src, i) => {
+                  const meta   = IMG_META[src] ?? { w: 4, h: 3 };
+                  // Column 0 → from left, column 1 → from right.
+                  const side   = i % 2 === 0 ? "left" : "right";
+                  // Stagger the right column down for an offset rhythm.
+                  const offset = i % 2 === 1 ? "mt-10" : "";
+
+                  return (
+                    <RevealSide
+                      key={src}
+                      side={side}
+                      delay={(i % 2) * 0.08}
+                      className={`relative w-full ${offset}`}
+                    >
+                      <div
+                        className="relative w-full overflow-hidden"
+                        style={{ aspectRatio: `${meta.w} / ${meta.h}` }}
+                      >
+                        <TiltCard intensity={6} className="absolute inset-0">
+                          <ImageReveal className="absolute inset-0 bg-ink-700">
+                            <div
+                              className="bts-img absolute inset-0 will-change-transform"
+                              style={{ transform: "scale(1.08)" }}
+                            >
+                              <Image
+                                src={src}
+                                alt={`Behind the scenes ${i + 1}`}
+                                fill
+                                sizes="(min-width: 768px) 22vw, 45vw"
+                                className="object-cover"
+                              />
+                            </div>
+                          </ImageReveal>
+                        </TiltCard>
                       </div>
-                    </ImageReveal>
-                  </TiltCard>
-                ))}
+                    </RevealSide>
+                  );
+                })}
               </div>
 
               <div className="mt-8 flex items-center justify-between text-[11px] uppercase tracking-[0.28em] text-ink-100">

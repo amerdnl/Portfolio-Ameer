@@ -102,8 +102,8 @@ export default function Hero() {
         {/* Bottom row */}
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <p className="max-w-md text-sm leading-relaxed text-ink-50/85 md:text-base">
-            A photography and direction studio crafting cinematic imagery for
-            brands that prefer atmosphere to noise.
+            A photography and direction studio based in Shah Alam, crafting
+            cinematic imagery for brands that prefer atmosphere to noise.
           </p>
 
           <div className="flex items-center gap-6 text-[11px] uppercase tracking-[0.32em] text-ink-50/70">

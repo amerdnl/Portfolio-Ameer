@@ -15,13 +15,13 @@ const fraunces = Fraunces({
 });
 
 export const metadata = {
-  title: "Ameer — Photography & Visual Storytelling",
+  title: "northofamer — Photography & Visual Storytelling",
   description:
-    "An independent photography and videography studio crafting cinematic visuals for modern brands and the people who build them.",
+    "An independent photography and videography studio based in Shah Alam, crafting cinematic visuals for modern brands and the people who build them.",
   openGraph: {
-    title: "Ameer — Photography & Visual Storytelling",
+    title: "northofamer — Photography & Visual Storytelling",
     description:
-      "Cinematic photography and videography. Editorial. Atmospheric. Considered.",
+      "Cinematic photography and videography from Shah Alam. Editorial. Atmospheric. Considered.",
   },
 };
 

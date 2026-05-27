@@ -111,6 +111,62 @@ export function RevealBlock({
 }
 
 /* ─────────────────────────────────────────────────────────────────── */
+/* RevealSide — horizontal slide in/out tied to scroll direction       */
+/*                                                                     */
+/* Images on the left animate in from the left when scrolling down     */
+/* and exit back to the left on scroll-up. Right-side elements mirror  */
+/* this. Done with a bidirectional ScrollTrigger so the motion always  */
+/* matches the user's scroll gesture.                                  */
+/* ─────────────────────────────────────────────────────────────────── */
+export function RevealSide({
+  children,
+  className,
+  side = "left",        // "left" | "right"
+  distance = 90,        // px of off-screen offset
+  delay = 0,
+  duration = 1.4,
+  start = "top 90%",
+  end   = "top 28%",
+}) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const ctx = gsap.context(() => {
+      const fromX = side === "left" ? -distance : distance;
+      gsap.set(node, { x: fromX, opacity: 0 });
+      gsap.to(node, {
+        x: 0,
+        opacity: 1,
+        duration,
+        ease: "expo.out",
+        delay,
+        scrollTrigger: {
+          trigger: node,
+          start,
+          end,
+          toggleActions: TOGGLE,
+        },
+      });
+    }, ref);
+
+    return () => ctx.revert();
+  }, [side, distance, delay, duration, start, end]);
+
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{ willChange: "transform, opacity" }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────── */
 /* ImageReveal — clip-mask + inner-scale, bidirectional via class flip */
 /* ─────────────────────────────────────────────────────────────────── */
 export function ImageReveal({

@@ -1,6 +1,7 @@
 import SmoothScroll from "@/components/SmoothScroll";
 import Cursor from "@/components/Cursor";
-import HeroCursor from "@/components/HeroCursor";
+import LiquidCursor from "@/components/LiquidCursor";
+import PageTransition from "@/components/PageTransition";
 import Nav from "@/components/Nav";
 import Hero from "@/components/sections/Hero";
 import Works from "@/components/sections/Works";
@@ -13,7 +14,8 @@ export default function Page() {
   return (
     <SmoothScroll>
       <Cursor />
-      <HeroCursor />
+      <LiquidCursor />
+      <PageTransition />
       <Nav />
       <main className="relative">
         <Hero />

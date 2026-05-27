@@ -22,7 +22,7 @@ export default function Contact() {
       new Intl.DateTimeFormat("en-GB", {
         hour: "2-digit",
         minute: "2-digit",
-        timeZone: "Europe/Lisbon",
+        timeZone: "Asia/Kuala_Lumpur",
       }).format(new Date());
     setTime(fmt());
     const id = setInterval(() => setTime(fmt()), 30000);
@@ -129,14 +129,14 @@ export default function Contact() {
         <footer className="grid grid-cols-2 gap-y-8 py-10 text-[11px] uppercase tracking-[0.28em] text-ink-100 md:grid-cols-4">
           <div>
             <p className="text-ink-0">Studio</p>
-            <p className="mt-2">Rua de Santa Catarina 3B</p>
-            <p>1200-403 Lisbon</p>
+            <p className="mt-2">Persiaran Setia Murni, Studio 3B</p>
+            <p>40170 Shah Alam, Selangor</p>
           </div>
           <div>
             <p className="text-ink-0">Hours</p>
             <p className="mt-2 flex items-center gap-2">
               <span className="h-1 w-1 animate-blink rounded-full bg-accent" />
-              Lisbon · {time || "—"}
+              Shah Alam · {time || "—"}
             </p>
             <p>Mon — Fri · By appointment</p>
           </div>
@@ -147,15 +147,15 @@ export default function Contact() {
           </div>
           <div className="md:text-right">
             <p className="text-ink-0">© 2026</p>
-            <p className="mt-2">Ameer Studio</p>
+            <p className="mt-2 lowercase">northofamer</p>
             <p>All Rights Reserved</p>
           </div>
         </footer>
 
         {/* Big wordmark */}
         <div className="relative -mx-6 mt-4 select-none overflow-hidden md:-mx-10">
-          <p className="font-display text-[19vw] leading-[0.82] tracking-tightest text-ink-0/95">
-            AMEER<span className="italic text-accent">.</span>
+          <p className="font-display text-[15vw] leading-[0.82] tracking-tightest text-ink-0/95 lowercase">
+            northofamer<span className="italic text-accent">.</span>
           </p>
         </div>
       </div>

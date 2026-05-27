@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 
 const LINKS = [
-  { id: "works", label: "Works" },
-  { id: "about", label: "About" },
+  { id: "top",     label: "Home" },
+  { id: "works",   label: "Works" },
+  { id: "about",   label: "Studio" },
   { id: "process", label: "Process" },
   { id: "contact", label: "Contact" },
 ];
@@ -21,12 +22,16 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const go = (id) => (e) => {
+  // Cinematic transition: dispatch a custom event picked up by
+  // <PageTransition />, which runs a fullscreen curtain animation
+  // and snaps the document to the anchor mid-wipe.
+  const go = (id, label) => (e) => {
     e.preventDefault();
-    const el = document.getElementById(id);
-    if (!el) return;
+    if (!document.getElementById(id)) return;
     setOpen(false);
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.dispatchEvent(
+      new CustomEvent("page:transition", { detail: { id, label } })
+    );
   };
 
   return (
@@ -39,21 +44,21 @@ export default function Nav() {
       <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 md:px-10">
         <a
           href="#top"
-          onClick={go("top")}
+          onClick={go("top", "Home")}
           className="group flex items-center gap-3 text-[13px] uppercase tracking-[0.28em] text-ink-0"
         >
           <span className="relative inline-block h-[7px] w-[7px] rounded-full bg-accent">
             <span className="absolute inset-0 animate-glow rounded-full bg-accent" />
           </span>
-          <span className="font-medium">Ameer Studio</span>
+          <span className="font-medium lowercase tracking-[0.22em]">northofamer</span>
         </a>
 
         <nav className="hidden items-center gap-10 md:flex">
-          {LINKS.map((l) => (
+          {LINKS.filter((l) => l.id !== "top").map((l) => (
             <a
               key={l.id}
               href={`#${l.id}`}
-              onClick={go(l.id)}
+              onClick={go(l.id, l.label)}
               className="group relative text-[12px] uppercase tracking-[0.26em] text-ink-100 transition-colors hover:text-ink-0"
             >
               <span>{l.label}</span>
@@ -64,7 +69,7 @@ export default function Nav() {
 
         <a
           href="#contact"
-          onClick={go("contact")}
+          onClick={go("contact", "Contact")}
           className="hidden text-[12px] uppercase tracking-[0.26em] text-ink-0 md:inline-flex"
           data-cursor="hover"
         >
@@ -102,11 +107,11 @@ export default function Nav() {
         )}
       >
         <div className="flex h-full flex-col items-start justify-center gap-6 px-8">
-          {LINKS.map((l, i) => (
+          {LINKS.filter((l) => l.id !== "top").map((l, i) => (
             <a
               key={l.id}
               href={`#${l.id}`}
-              onClick={go(l.id)}
+              onClick={go(l.id, l.label)}
               className="font-display text-5xl tracking-tight text-ink-0"
               style={{ transitionDelay: `${i * 60}ms` }}
             >
@@ -115,7 +120,7 @@ export default function Nav() {
           ))}
           <a
             href="#contact"
-            onClick={go("contact")}
+            onClick={go("contact", "Contact")}
             className="mt-6 text-[12px] uppercase tracking-[0.26em] text-accent"
           >
             Start a project →

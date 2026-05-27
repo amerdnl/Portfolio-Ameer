@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { WORKS } from "@/lib/data";
-import { RevealText } from "@/components/Reveal";
+import { WORKS, IMG_META } from "@/lib/data";
+import { RevealText, RevealSide } from "@/components/Reveal";
 import TiltCard from "@/components/TiltCard";
 import SectionTitle from "@/components/SectionTitle";
 
@@ -16,53 +16,45 @@ export default function Works() {
     const ctx = gsap.context(() => {
       const items = gsap.utils.toArray(".work-card");
       items.forEach((card) => {
-        const img = card.querySelector(".work-img");
+        const img  = card.querySelector(".work-img");
         const meta = card.querySelector(".work-meta");
 
-        // Parallax image
-        gsap.fromTo(
-          img,
-          { yPercent: -8, scale: 1.1 },
-          {
-            yPercent: 8,
-            ease: "none",
-            scrollTrigger: {
-              trigger: card,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: true,
-            },
-          }
-        );
+        // Subtle parallax — the inner scale-110 gives headroom so the
+        // image never reveals the container background.
+        if (img) {
+          gsap.fromTo(
+            img,
+            { yPercent: -5 },
+            {
+              yPercent: 5,
+              ease: "none",
+              scrollTrigger: {
+                trigger: card,
+                start: "top bottom",
+                end:   "bottom top",
+                scrub: true,
+              },
+            }
+          );
+        }
 
-        // Card lift
-        gsap.fromTo(
-          card,
-          { y: 80, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1.4,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-            },
-          }
-        );
-
-        // Meta fade in
+        // Meta fade-in — synchronised with the card's directional reveal.
         if (meta) {
           gsap.fromTo(
             meta,
-            { y: 30, opacity: 0 },
+            { y: 24, opacity: 0 },
             {
               y: 0,
               opacity: 1,
-              duration: 1.2,
-              delay: 0.2,
+              duration: 1.1,
+              delay: 0.15,
               ease: "power3.out",
-              scrollTrigger: { trigger: card, start: "top 80%" },
+              scrollTrigger: {
+                trigger: card,
+                start: "top 82%",
+                end:   "top 25%",
+                toggleActions: "play reverse play reverse",
+              },
             }
           );
         }
@@ -100,8 +92,11 @@ export default function Works() {
         </div>
 
         {/* Grid */}
-        <div className="mt-24 grid grid-cols-1 gap-x-10 gap-y-32 md:grid-cols-12">
+        <div className="mt-24 grid grid-cols-1 gap-x-10 gap-y-24 md:grid-cols-12 md:gap-y-32">
           {WORKS.map((w, i) => {
+            // Alternating L/R column placement gives an editorial rhythm.
+            // Wide columns for landscape images, narrower for portrait —
+            // the natural aspect ratio drives the cell's height.
             const layouts = [
               "md:col-span-7 md:col-start-1",
               "md:col-span-5 md:col-start-8 md:mt-32",
@@ -110,57 +105,70 @@ export default function Works() {
               "md:col-span-7 md:col-start-1",
               "md:col-span-5 md:col-start-8 md:mt-20",
             ];
-            const aspect = i % 2 === 0 ? "aspect-[4/5]" : "aspect-[3/4]";
+            const side = i % 2 === 0 ? "left" : "right";
+            const meta = IMG_META[w.cover] ?? { w: 4, h: 3 };
+
             return (
-              <article
+              <RevealSide
                 key={w.id}
+                side={side}
+                delay={0.05}
                 className={`work-card group relative ${layouts[i % layouts.length]}`}
-                data-cursor="hover"
               >
-                <TiltCard
-                  className={`relative ${aspect} w-full overflow-hidden bg-ink-700`}
-                >
-                  <div className="work-img absolute inset-0 will-change-transform">
-                    <Image
-                      src={w.cover}
-                      alt={w.title}
-                      fill
-                      sizes="(min-width: 768px) 50vw, 100vw"
-                      className="object-cover transition-[filter] duration-1000 ease-cinematic group-hover:grayscale-0"
-                      priority={i < 2}
-                    />
+                <div data-cursor="hover">
+                  {/* Image frame — aspect-ratio matches the source so the
+                      image is never cropped, stretched, or letter-boxed. */}
+                  <div
+                    className="relative w-full overflow-hidden bg-ink-700"
+                    style={{ aspectRatio: `${meta.w} / ${meta.h}` }}
+                  >
+                    <TiltCard className="absolute inset-0">
+                      <div
+                        className="work-img absolute inset-0 will-change-transform"
+                        style={{ transform: "scale(1.1)" }}
+                      >
+                        <Image
+                          src={w.cover}
+                          alt={w.title}
+                          fill
+                          sizes="(min-width: 1280px) 45vw, (min-width: 768px) 55vw, 100vw"
+                          className="object-cover transition-[filter] duration-1000 ease-cinematic group-hover:grayscale-0"
+                          priority={i < 2}
+                        />
+                      </div>
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-900/40 via-transparent to-transparent transition-opacity duration-700 group-hover:opacity-30" />
+                      {/* Index numeral */}
+                      <span className="numeral pointer-events-none absolute -top-6 -left-2 text-[6rem] leading-none text-ink-0/0 mix-blend-overlay transition-all duration-700 group-hover:text-ink-0/15 md:text-[9rem]">
+                        {w.id}
+                      </span>
+                      {/* View tag */}
+                      <span className="absolute right-4 top-4 inline-flex items-center gap-2 rounded-full border border-ink-0/20 bg-ink-900/30 px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] text-ink-0 backdrop-blur-md opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1">
+                        <span className="h-1 w-1 rounded-full bg-accent" />
+                        View piece
+                      </span>
+                    </TiltCard>
                   </div>
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-900/40 via-transparent to-transparent transition-opacity duration-700 group-hover:opacity-30" />
-                  {/* Index numeral */}
-                  <span className="numeral pointer-events-none absolute -top-6 -left-2 text-[6rem] leading-none text-ink-0/0 mix-blend-overlay transition-all duration-700 group-hover:text-ink-0/15 md:text-[9rem]">
-                    {w.id}
-                  </span>
-                  {/* View tag */}
-                  <span className="absolute right-4 top-4 inline-flex items-center gap-2 rounded-full border border-ink-0/20 bg-ink-900/30 px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] text-ink-0 backdrop-blur-md opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1">
-                    <span className="h-1 w-1 rounded-full bg-accent" />
-                    View piece
-                  </span>
-                </TiltCard>
 
-                <div className="work-meta mt-6 flex items-start justify-between gap-6">
-                  <div>
-                    <h3 className="font-display text-2xl tracking-tight text-ink-0 md:text-3xl">
-                      {w.title}
-                    </h3>
-                    <p className="mt-1 text-[12px] uppercase tracking-[0.26em] text-ink-100">
-                      {w.discipline}
-                    </p>
+                  <div className="work-meta mt-6 flex items-start justify-between gap-6">
+                    <div>
+                      <h3 className="font-display text-2xl tracking-tight text-ink-0 md:text-3xl">
+                        {w.title}
+                      </h3>
+                      <p className="mt-1 text-[12px] uppercase tracking-[0.26em] text-ink-100">
+                        {w.discipline}
+                      </p>
+                    </div>
+                    <div className="text-right text-[11px] uppercase tracking-[0.28em] text-ink-100">
+                      <p>{w.client}</p>
+                      <p className="mt-1 text-ink-200">{w.year}</p>
+                    </div>
                   </div>
-                  <div className="text-right text-[11px] uppercase tracking-[0.28em] text-ink-100">
-                    <p>{w.client}</p>
-                    <p className="mt-1 text-ink-200">{w.year}</p>
-                  </div>
+
+                  <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-100/85">
+                    {w.description}
+                  </p>
                 </div>
-
-                <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-100/85">
-                  {w.description}
-                </p>
-              </article>
+              </RevealSide>
             );
           })}
         </div>
@@ -172,7 +180,11 @@ export default function Works() {
             href="#contact"
             onClick={(e) => {
               e.preventDefault();
-              document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+              window.dispatchEvent(
+                new CustomEvent("page:transition", {
+                  detail: { id: "contact", label: "Contact" },
+                })
+              );
             }}
             className="group inline-flex items-center gap-3 text-ink-0 transition-colors hover:text-accent"
             data-cursor="hover"
