@@ -5,15 +5,28 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PROCESS, IMG_META } from "@/lib/data";
-import { RevealText, ImageReveal, RevealSide } from "@/components/Reveal";
+import { RevealText, ImageReveal } from "@/components/Reveal";
 import TiltCard from "@/components/TiltCard";
 import SectionTitle from "@/components/SectionTitle";
 
+/**
+ * Behind-the-scenes lineup.
+ *
+ * Constraint: nobody who appears in Works can appear here. The lineup
+ * currently is:
+ *   1. DSC07670 — pianist (curly hair)         — unique
+ *   2. DSC08556 — duo (green-hijab + plaid)    — unique pair
+ *   3. DSC08590 — drummer (SUDOKU kit)         — unique
+ *   4. DSC08576 — guitarist (black outfit)     — unique
+ *
+ * Works uses: 08449, 08692, 07688, 08380, 07356, 08687.
+ * No overlap with the four above.
+ */
 const BTS = [
-  "/DSC07670.jpg",   // landscape — left column
+  "/DSC07670.jpg",   // landscape — left  column
   "/DSC08556.jpg",   // landscape — right column
-  "/DSC08590.jpg",   // landscape — left column
-  "/DSC07674.jpg",   // portrait  — right column
+  "/DSC08590.jpg",   // landscape — left  column
+  "/DSC08576.jpg",   // landscape — right column (replaces 07674, was same person as Works 03)
 ];
 
 export default function Process() {
@@ -43,8 +56,36 @@ export default function Process() {
         );
       });
 
-      // BTS images — gentle vertical parallax (the directional slide is
-      // handled by the RevealSide wrapper around each tile).
+      // BTS tiles — play-once directional slide.
+      //
+      // We deliberately don't use the scrub-based RevealSide here.
+      // The BTS column is sticky (md:sticky md:top-28), so the tile's
+      // *natural* scroll position passes the viewport long before the
+      // sticky column visually leaves — a scrub timeline would advance
+      // into its "exit" phase and animate the tile to opacity:0 while
+      // it's still pinned in view (the empty-placeholder bug).
+      //
+      // Single-shot reveal: slide in once, stay forever.
+      gsap.utils.toArray(".bts-tile").forEach((tile, i) => {
+        const fromX = i % 2 === 0 ? -110 : 110;
+        gsap.fromTo(
+          tile,
+          { x: fromX, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 1.4,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: tile,
+              start: "top 88%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      });
+
+      // Subtle vertical parallax on the image inside each tile.
       gsap.utils.toArray(".bts-img").forEach((el, i) => {
         gsap.to(el, {
           yPercent: i % 2 === 0 ? -10 : 8,
@@ -121,16 +162,14 @@ export default function Process() {
               <div className="grid grid-cols-2 gap-4">
                 {BTS.map((src, i) => {
                   const meta   = IMG_META[src] ?? { w: 4, h: 3 };
-                  // Column 0 → from left, column 1 → from right.
-                  const side   = i % 2 === 0 ? "left" : "right";
                   // Stagger the right column down for an offset rhythm.
                   const offset = i % 2 === 1 ? "mt-10" : "";
 
                   return (
-                    <RevealSide
+                    <div
                       key={src}
-                      side={side}
-                      className={`relative w-full ${offset}`}
+                      className={`bts-tile relative w-full ${offset}`}
+                      style={{ willChange: "transform, opacity" }}
                     >
                       <div
                         className="relative w-full overflow-hidden"
@@ -153,7 +192,7 @@ export default function Process() {
                           </ImageReveal>
                         </TiltCard>
                       </div>
-                    </RevealSide>
+                    </div>
                   );
                 })}
               </div>
