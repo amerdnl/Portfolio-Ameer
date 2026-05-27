@@ -109,7 +109,11 @@ export default function PageTransition() {
       aria-hidden
       className="pointer-events-none fixed inset-0 z-[150]"
     >
-      {/* Vertical curtain panels */}
+      {/* Vertical curtain panels.
+          CRITICAL: each panel ships with `transform: translateY(100%)`
+          inline so it's already off-screen on the very first paint
+          (before useEffect runs gsap.set). Without this, the panels
+          briefly cover the hero as a black band before mount. */}
       <div className="absolute inset-0 flex">
         {Array.from({ length: PANELS }).map((_, i) => (
           <div
@@ -117,6 +121,7 @@ export default function PageTransition() {
             ref={(el) => { panelsRef.current[i] = el; }}
             className="relative h-full flex-1 will-change-transform"
             style={{
+              transform: "translateY(100%)",
               background:
                 i === 0 || i === PANELS - 1
                   ? "linear-gradient(180deg, #050504 0%, #0a0a08 100%)"

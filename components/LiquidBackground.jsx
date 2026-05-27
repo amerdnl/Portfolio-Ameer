@@ -72,37 +72,41 @@ export default function LiquidBackground() {
         simResolution:       128,
         dyeResolution:       1024,
         // Dissipation — how quickly the wake fades. Lower = longer trail.
-        densityDissipation:  2.2,
-        velocityDissipation: 1.7,
+        densityDissipation:  1.9,
+        velocityDissipation: 1.5,
         // Pressure solver
         pressure:            0.82,
         pressureIterations:  20,
         // Vorticity / swirl — gives the wake those organic curls
-        curl:                28,
-        // Splat shape & strength — slightly wider for premium presence
-        splatRadius:         0.2,
-        splatForce:          6000,
+        curl:                30,
+        // Splat shape & strength — wider for confident presence
+        splatRadius:         0.24,
+        splatForce:          6500,
         // Look & feel
         shading:             true,
         colorful:            false,
         colorPalette:        PALETTE,
         transparent:         true,
-        // Brightness bumped — the wake now reads clearly across the
-        // hero photograph and on every section background.
-        brightness:          0.72,
+        // Brightness pumped — the wake glows confidently over the hero
+        // photograph and across every section background.
+        brightness:          0.9,
         // We feed splats ourselves, so disable the lib's built-in hover
         // (it would bind to the container and we want pointer-events:none).
         hover:               false,
-        // Bloom turned up for that premium liquid-gold glow
+        // Bloom turned up for the premium liquid-gold glow
         bloom:               true,
         bloomIterations:     8,
         bloomResolution:     256,
-        bloomIntensity:      0.72,
+        bloomIntensity:      0.85,
         bloomThreshold:      0.5,
         bloomSoftKnee:       0.7,
         sunrays:             false,
       });
       sim.start();
+      // Seed the field with a handful of random splats so the fluid
+      // is alive from the first frame — viewer doesn't need to move
+      // the mouse to see the effect.
+      sim.multipleSplats(6);
       window.addEventListener("mousemove", onMove, { passive: true });
     });
 
