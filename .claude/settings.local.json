@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(npm view *)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3000/_next/static/css/app/layout.css?v=1779867133065\")",
+      "Bash(curl -s \"http://localhost:3000/_next/static/css/app/layout.css\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -sf -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000)",
+      "Bash(cp \"/Users/ameerdanial/portfolio picture/\"*.jpg \"/Users/ameerdanial/Portfolio Ameer/public/\" && echo \"copied\" && ls \"/Users/ameerdanial/Portfolio Ameer/public/\")",
+      "Bash(ls -t ~/Downloads/*.jpg ~/Downloads/*.jpeg ~/Downloads/*.png ~/Desktop/*.jpg ~/Desktop/*.jpeg 2>/dev/null | head -10)",
+      "Bash(ls -lt ~/Downloads/ | head -10 && echo \"---\" && ls -lt ~/Desktop/ | head -10)",
+      "Bash(ls -lt \"/Users/ameerdanial/portfolio picture/\" && echo \"---\" && find ~/Pictures -name \"*.jpg\" -newer \"/Users/ameerdanial/portfolio picture/DSC08884.jpg\" 2>/dev/null | head -10)"
+    ]
+  }
+}
