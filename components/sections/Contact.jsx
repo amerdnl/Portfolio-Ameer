@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SectionTitle from "@/components/SectionTitle";
 import TiltCard from "@/components/TiltCard";
+import { ImageReveal } from "@/components/Reveal";
 
 const CHANNELS = [
   { label: "Email", value: "ekspresiameer@gmail.com", href: "mailto:ekspresiameer@gmail.com" },
@@ -58,6 +60,22 @@ export default function Contact() {
           },
         }
       );
+
+      // Subtle vertical parallax on the inner image — matches the
+      // .work-img / .bts-img treatment so the Contact portrait reads
+      // with the same cinematic depth as the Works and Process tiles.
+      // scrub:true ties the drift to scroll position rather than firing
+      // an out-animation, so the image never re-hides itself.
+      gsap.to(".contact-img", {
+        yPercent: -8,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".contact-photo",
+          start: "top bottom",
+          end:   "bottom top",
+          scrub: true,
+        },
+      });
     }, ref);
     return () => ctx.revert();
   }, []);
@@ -83,19 +101,31 @@ export default function Contact() {
           {/* Portrait + bio */}
           <div className="md:col-span-12">
             <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-20">
-              {/* Photo */}
+              {/* Photo — matches the Works/Process reveal vocabulary:
+                  outer slide-in from left (.contact-photo), dark
+                  curtain mask lifts off the frame (ImageReveal), and
+                  inner parallax drift on the image itself (.contact-img).
+                  All play-once — once the photo is revealed it stays
+                  revealed, since this is the final section. */}
               <div className="contact-photo md:col-span-5" style={{ willChange: "transform, opacity" }}>
-                <div className="relative w-full overflow-hidden rounded-xl" style={{ aspectRatio: "5990 / 3993" }}>
-                  <TiltCard intensity={6} className="absolute inset-0">
-                    <Image
-                      src="/DSC06965_Original.jpg"
-                      alt="Ameer Danial — northofamer"
-                      fill
-                      sizes="(min-width: 768px) 40vw, 100vw"
-                      className="object-cover object-top"
-                    />
-                  </TiltCard>
-                </div>
+                <ImageReveal className="rounded-xl">
+                  <div className="relative w-full" style={{ aspectRatio: "5990 / 3993" }}>
+                    <TiltCard intensity={6} className="absolute inset-0">
+                      <div
+                        className="contact-img absolute inset-0 will-change-transform"
+                        style={{ transform: "scale(1.08)" }}
+                      >
+                        <Image
+                          src="/DSC06965_Original.jpg"
+                          alt="Ameer Danial — northofamer"
+                          fill
+                          sizes="(min-width: 768px) 40vw, 100vw"
+                          className="object-cover object-top"
+                        />
+                      </div>
+                    </TiltCard>
+                  </div>
+                </ImageReveal>
               </div>
 
               {/* Bio */}

@@ -230,11 +230,7 @@ export default function Hero() {
       <div ref={mediaRef} className="absolute inset-0 z-0 will-change-transform" style={{ opacity: 0 }}>
         <video
           ref={videoRef}
-          // object-contain on mobile so the FULL landscape frame is
-          // visible (with subtle dark space top/bottom that blends
-          // with bg-ink-900). object-cover on desktop where the
-          // viewport is wide enough to fill cleanly.
-          className="h-full w-full object-contain md:object-cover"
+          className="h-full w-full object-cover"
           muted={muted}
           loop
           playsInline
