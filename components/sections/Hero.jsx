@@ -11,22 +11,31 @@ export default function Hero() {
   const mediaRef   = useRef(null);
   const overlayRef = useRef(null);
   const videoRef   = useRef(null);
-  // Mirrors muted state without causing re-renders inside scroll callbacks
-  const mutedRef     = useRef(true);
-  // True while the initial volume ramp-up is in progress — suppresses the
-  // ScrollTrigger volume override so it can't jump to 1 before the tween fires.
-  const isRampingRef = useRef(false);
+  // mutedRef    — the *user's* intent (what the mute button reflects)
+  // scrollMutedRef — true when the scroll-out has hard-muted the video
+  //                  (iOS-safe fallback for v.volume which is ignored on
+  //                  Safari mobile). Kept separate so the mute button
+  //                  can't get out of sync with the scroll-fade logic.
+  // isRampingRef — true while the initial volume ramp-up is in progress;
+  //                suppresses the ScrollTrigger volume override.
+  const mutedRef       = useRef(true);
+  const scrollMutedRef = useRef(false);
+  const isRampingRef   = useRef(false);
 
   const [muted,        setMuted]        = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // Mute button reads/writes the user-intent ref, not v.muted (which the
+  // scroll-fade may have changed without the user asking). Clears the
+  // scroll-mute flag too so the user is now in charge.
   const toggleMute = useCallback(() => {
     const v = videoRef.current;
     if (!v) return;
-    const next = !v.muted;
+    const next = !mutedRef.current;
     v.muted = next;
     if (!next) v.volume = 1;
     mutedRef.current = next;
+    scrollMutedRef.current = false;
     setMuted(next);
   }, []);
 
@@ -203,15 +212,36 @@ export default function Hero() {
         },
       });
 
-      // Audio volume fades out as hero leaves, back in on return.
-      // Only active when the viewer has explicitly unmuted.
+      // Audio fades as the hero scrolls out, returns as the hero scrolls
+      // back in. Two mechanisms in one trigger:
+      //   • v.volume = 1 - progress   — smooth fade for desktop browsers
+      //     that honour JS volume changes (Chrome, Firefox, desktop Safari).
+      //   • v.muted toggle near the bottom — hard fallback for iOS Safari,
+      //     which silently ignores JS volume changes and would otherwise
+      //     keep blasting audio while the user is in the Works section.
+      // Both only fire if the user has actually unmuted the reel.
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start:   "top top",
         end:     "bottom top",
         onUpdate: (self) => {
-          if (!mutedRef.current && !isRampingRef.current && videoRef.current) {
-            videoRef.current.volume = Math.max(0, 1 - self.progress);
+          const v = videoRef.current;
+          if (!v || mutedRef.current || isRampingRef.current) return;
+
+          // Desktop-friendly smooth fade.
+          v.volume = Math.max(0, 1 - self.progress);
+
+          // iOS-safe hard mute as the hero leaves the viewport.
+          // Threshold 0.75 = hero is 75% scrolled past → audio off.
+          // Re-unmute as soon as the hero comes back into the upper
+          // quarter of the page, so scrolling back up doesn't leave
+          // the viewer in silence.
+          if (self.progress > 0.75 && !v.muted) {
+            v.muted = true;
+            scrollMutedRef.current = true;
+          } else if (self.progress <= 0.75 && v.muted && scrollMutedRef.current) {
+            v.muted = false;
+            scrollMutedRef.current = false;
           }
         },
       });
