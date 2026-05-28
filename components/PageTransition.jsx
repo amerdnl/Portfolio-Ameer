@@ -4,39 +4,30 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 
 /**
- * PageTransition — cinematic fullscreen wipe used between
- * navigation/anchor jumps (Home, Works, About, Process, Contact).
+ * PageTransition — cinematic full-screen wipe between anchor jumps.
  *
- * Wire-up:
- *   • Any component dispatches a global event:
- *       window.dispatchEvent(new CustomEvent("page:transition", {
- *         detail: { id: "works", label: "Selected" }
- *       }));
- *   • This component listens, runs the curtain timeline, and inside
- *     the held middle frame snaps the document to the target anchor
- *     (so the new section is already in place when the curtain lifts).
+ * Mirrors the LoadingScreen aesthetic:
+ *   1. Single dark panel rises from below, covering the screen.
+ *   2. Section name + accent line appear (same style as the intro wordmark).
+ *   3. Scroll snaps to destination via Lenis instant-scroll (bypasses smooth lerp).
+ *   4. Panel zoom-dissolves away — identical to the loading screen exit.
  *
- * Visual recipe:
- *   • 5 vertical panels rise from below to cover the screen with a
- *     soft stagger and a subtle filter-blur, fading a chapter label
- *     in mid-transition. They then lift upward together, revealing
- *     the destination.
- *   • All animation is GSAP-driven for cinematic easing and timing.
+ * Triggered by any component dispatching:
+ *   window.dispatchEvent(new CustomEvent("page:transition", {
+ *     detail: { id: "works", label: "Works" }
+ *   }));
  */
-
-const PANELS = 5;
-
 export default function PageTransition() {
-  const overlayRef = useRef(null);
-  const panelsRef  = useRef([]);
+  const panelRef   = useRef(null);
   const labelRef   = useRef(null);
   const lineRef    = useRef(null);
   const runningRef = useRef(false);
 
   useEffect(() => {
-    // Set initial state — fully off-screen below
-    gsap.set(panelsRef.current, { yPercent: 100 });
-    gsap.set([labelRef.current, lineRef.current], { opacity: 0 });
+    // Off-screen below — matches the inline style so no flash on first paint.
+    gsap.set(panelRef.current,  { yPercent: 100 });
+    gsap.set(labelRef.current,  { opacity: 0, y: 28 });
+    gsap.set(lineRef.current,   { scaleX: 0, opacity: 0 });
 
     const handler = (e) => {
       if (runningRef.current) return;
@@ -44,59 +35,68 @@ export default function PageTransition() {
 
       const id    = e.detail?.id    ?? "top";
       const label = e.detail?.label ?? "";
-
       if (labelRef.current) labelRef.current.textContent = label;
 
-      // Cinematic curtain timeline
       const tl = gsap.timeline({
         onComplete: () => { runningRef.current = false; },
       });
 
-      // 1 — curtain rises from below
-      tl.to(panelsRef.current, {
+      // 1 — Panel rises immediately (power4.out = fast start, no perceived delay).
+      //     expo.inOut was the culprit: its slow "in" phase made the panel
+      //     barely move for the first ~200 ms after the click.
+      tl.to(panelRef.current, {
         yPercent: 0,
-        duration: 0.85,
-        ease: "expo.inOut",
-        stagger: { each: 0.04, from: "start" },
-      })
-        // 2 — label + hairline fade in over the held curtain
-        .to(labelRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.45,
-          ease: "power2.out",
-        }, "-=0.35")
-        .fromTo(lineRef.current,
-          { scaleX: 0, opacity: 0 },
-          { scaleX: 1, opacity: 1, duration: 0.6, ease: "power3.out" },
-          "<")
-        // 3 — at peak, jump the document to the target instantly
-        .add(() => {
-          const el = document.getElementById(id);
-          if (el) {
-            // Bypass Lenis smooth — we're hidden behind the curtain
-            const rect = el.getBoundingClientRect();
-            const y = rect.top + window.scrollY - (id === "top" ? 0 : 0);
-            window.scrollTo({ top: y, behavior: "instant" });
-          }
-        })
-        // 4 — short hold so the label reads
-        .to({}, { duration: 0.18 })
-        // 5 — fade label + line back out
-        .to([labelRef.current, lineRef.current], {
-          opacity: 0,
-          duration: 0.35,
-          ease: "power2.in",
-        })
-        // 6 — curtain lifts upward, revealing the new section
-        .to(panelsRef.current, {
-          yPercent: -100,
-          duration: 0.95,
-          ease: "expo.inOut",
-          stagger: { each: 0.045, from: "end" },
-        }, "-=0.1")
-        // 7 — reset for next run (off-screen below)
-        .set(panelsRef.current, { yPercent: 100 });
+        duration: 0.48,
+        ease: "power4.out",
+      });
+
+      // 2 — Label + accent line rise in while panel is still settling
+      tl.to(labelRef.current, {
+        opacity: 1, y: 0,
+        duration: 0.38, ease: "power2.out",
+      }, "-=0.18");
+
+      tl.fromTo(lineRef.current,
+        { scaleX: 0, opacity: 0 },
+        { scaleX: 1, opacity: 1, duration: 0.4, ease: "power3.out" },
+        "<"
+      );
+
+      // 3 — Snap to destination while hidden behind the panel.
+      // Lenis's immediate scroll prevents the smooth-lerp from fighting the
+      // jump; falls back to window.scrollTo if Lenis isn't ready yet.
+      tl.add(() => {
+        const el = document.getElementById(id);
+        const y  = el
+          ? Math.round(el.getBoundingClientRect().top + window.scrollY)
+          : 0;
+        const lenis = window["__lenis"];
+        if (lenis) {
+          lenis.scrollTo(y, { immediate: true, force: true });
+        } else {
+          window.scrollTo({ top: y, behavior: "instant" });
+        }
+      });
+
+      // 4 — Hold so the label is readable
+      tl.to({}, { duration: 0.2 });
+
+      // 5 — Label + line fade out
+      tl.to([labelRef.current, lineRef.current], {
+        opacity: 0,
+        duration: 0.22, ease: "power2.in",
+      });
+
+      // 6 — Panel zoom-dissolves — mirrors the loading screen exit
+      tl.to(panelRef.current, {
+        scale: 1.1, opacity: 0,
+        duration: 0.72, ease: "power2.in",
+      }, "-=0.06");
+
+      // 7 — Reset for next use
+      tl.set(panelRef.current, { yPercent: 100, scale: 1, opacity: 1 });
+      tl.set(labelRef.current,  { opacity: 0, y: 28 });
+      tl.set(lineRef.current,   { scaleX: 0, opacity: 0 });
     };
 
     window.addEventListener("page:transition", handler);
@@ -105,47 +105,24 @@ export default function PageTransition() {
 
   return (
     <div
-      ref={overlayRef}
+      ref={panelRef}
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-[150]"
+      className="pointer-events-none fixed inset-0 z-[9000] flex flex-col items-center justify-center gap-5 bg-ink-900"
+      style={{ transform: "translateY(100%)" }}
     >
-      {/* Vertical curtain panels.
-          CRITICAL: each panel ships with `transform: translateY(100%)`
-          inline so it's already off-screen on the very first paint
-          (before useEffect runs gsap.set). Without this, the panels
-          briefly cover the hero as a black band before mount. */}
-      <div className="absolute inset-0 flex">
-        {Array.from({ length: PANELS }).map((_, i) => (
-          <div
-            key={i}
-            ref={(el) => { panelsRef.current[i] = el; }}
-            className="relative h-full flex-1 will-change-transform"
-            style={{
-              transform: "translateY(100%)",
-              background:
-                i === 0 || i === PANELS - 1
-                  ? "linear-gradient(180deg, #050504 0%, #0a0a08 100%)"
-                  : "linear-gradient(180deg, #0a0a08 0%, #050504 100%)",
-            }}
-          />
-        ))}
-      </div>
+      {/* Accent line — matches the loading screen hairline */}
+      <div
+        ref={lineRef}
+        className="h-px w-16 origin-center bg-accent"
+        style={{ opacity: 0 }}
+      />
 
-      {/* Center label — chapter name fades in mid-transition */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-5">
-          <span
-            ref={lineRef}
-            className="block h-px w-16 origin-left bg-accent"
-            style={{ opacity: 0 }}
-          />
-          <span
-            ref={labelRef}
-            className="font-display text-[clamp(2.4rem,6vw,5rem)] italic tracking-tight text-ink-0"
-            style={{ opacity: 0 }}
-          />
-        </div>
-      </div>
+      {/* Section name — same typeface and sizing as the intro wordmark */}
+      <span
+        ref={labelRef}
+        className="font-display lowercase italic leading-[0.85] tracking-tightest text-ink-0"
+        style={{ fontSize: "clamp(2.8rem, 9vw, 8rem)", opacity: 0 }}
+      />
     </div>
   );
 }

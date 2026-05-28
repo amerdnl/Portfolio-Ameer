@@ -15,11 +15,11 @@ const fraunces = Fraunces({
 });
 
 export const metadata = {
-  title: "northofamer — Photography & Visual Storytelling",
+  title: "northofamer — Photography & Videography",
   description:
-    "An independent photography and videography studio based in Shah Alam, crafting cinematic visuals for modern brands and the people who build them.",
+    "An independent photography and videography studio based in Shah Alam, crafting cinematic stills and films for modern brands and the people who build them.",
   openGraph: {
-    title: "northofamer — Photography & Visual Storytelling",
+    title: "northofamer — Photography & Videography",
     description:
       "Cinematic photography and videography from Shah Alam. Editorial. Atmospheric. Considered.",
   },
@@ -34,7 +34,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
-      <body className="bg-ink-800 text-ink-0 grain antialiased">
+      <body className="bg-ink-900 text-ink-0 grain antialiased">
         {children}
       </body>
     </html>

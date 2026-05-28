@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { RevealText } from "@/components/Reveal";
 import SectionTitle from "@/components/SectionTitle";
+import TiltCard from "@/components/TiltCard";
 
 const CHANNELS = [
   { label: "Email", value: "ekspresiameer@gmail.com", href: "mailto:ekspresiameer@gmail.com" },
@@ -41,6 +41,23 @@ export default function Contact() {
           scrollTrigger: { trigger: ref.current, start: "top 70%" },
         }
       );
+
+      // Portrait — slide in from left once, no exit.
+      gsap.fromTo(
+        ".contact-photo",
+        { x: -140, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1.4,
+          ease: "expo.out",
+          scrollTrigger: {
+            trigger: ".contact-photo",
+            start: "top 88%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
     }, ref);
     return () => ctx.revert();
   }, []);
@@ -49,13 +66,13 @@ export default function Contact() {
     <section
       id="contact"
       ref={ref}
-      className="relative overflow-hidden bg-ink-900 pt-28 md:pt-44"
+      className="relative overflow-hidden bg-ink-900 pt-14 md:pt-24"
     >
       <div className="mx-auto max-w-[1600px] px-6 md:px-10">
         {/* Oversized centered chapter word — slow scrub-tied entrance */}
-        <SectionTitle>CONTACT</SectionTitle>
+        <SectionTitle className="!mb-6 md:!mb-8">CONTACT</SectionTitle>
 
-        <div className="grid grid-cols-1 gap-y-16 md:grid-cols-12">
+        <div className="grid grid-cols-1 gap-y-10 md:grid-cols-12 md:gap-y-14">
           {/* Marker */}
           <div className="md:col-span-12">
             <p className="text-[11px] uppercase tracking-[0.32em] text-accent">
@@ -63,19 +80,48 @@ export default function Contact() {
             </p>
           </div>
 
-          {/* Headline */}
+          {/* Portrait + bio */}
           <div className="md:col-span-12">
-            <RevealText
-              as="h2"
-              lines={[
-                "Let's make",
-                <em key="1" className="italic text-ink-50">
-                  something
-                </em>,
-                "worth waiting for.",
-              ]}
-              className="font-display text-[clamp(2.8rem,9vw,9rem)] leading-[0.92] tracking-tightest text-ink-0"
-            />
+            <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-20">
+              {/* Photo */}
+              <div className="contact-photo md:col-span-5" style={{ willChange: "transform, opacity" }}>
+                <div className="relative w-full overflow-hidden rounded-xl" style={{ aspectRatio: "5990 / 3993" }}>
+                  <TiltCard intensity={6} className="absolute inset-0">
+                    <Image
+                      src="/DSC06965_Original.jpg"
+                      alt="Ameer Danial — northofamer"
+                      fill
+                      sizes="(min-width: 768px) 40vw, 100vw"
+                      className="object-cover object-top"
+                    />
+                  </TiltCard>
+                </div>
+              </div>
+
+              {/* Bio */}
+              <div className="flex flex-col justify-center md:col-span-7">
+                <p className="mb-5 text-[11px] uppercase tracking-[0.32em] text-accent">
+                  ⟶ &nbsp; The person behind the lens
+                </p>
+                <h3 className="font-display text-2xl tracking-tight text-ink-0 md:text-3xl">
+                  Ameer Danial
+                </h3>
+                <p className="mt-6 text-[15px] leading-[1.85] text-ink-100">
+                  The visuals and stories you've seen throughout this website reflect
+                  the kind of art and emotion I always strive to create for every
+                  client I work with. For me, photography and videography are more
+                  than just capturing moments — it's about turning real memories into
+                  something cinematic, timeless, and meaningful.
+                </p>
+                <p className="mt-4 text-[15px] leading-[1.85] text-ink-100">
+                  Whether it's a personal moment, a wedding, or a creative project,
+                  I always give my full passion, creativity, and attention to detail
+                  into every frame. If you choose to work with me, I promise to
+                  deliver visuals that not only look beautiful, but truly feel
+                  personal and memorable.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Email CTA */}
@@ -121,12 +167,12 @@ export default function Contact() {
         </div>
 
         {/* Divider */}
-        <div className="mt-28">
+        <div className="mt-24">
           <div className="contact-rule h-px w-full origin-left bg-ink-0/15" />
         </div>
 
         {/* Footer */}
-        <footer className="grid grid-cols-2 gap-y-8 py-10 text-[11px] uppercase tracking-[0.28em] text-ink-100 md:grid-cols-4">
+        <footer className="grid grid-cols-2 gap-y-8 py-10 text-[11px] uppercase tracking-[0.28em] text-ink-100 md:grid-cols-4 md:py-14">
           <div>
             <p className="text-ink-0">Based in</p>
             <p className="mt-2">Shah Alam</p>
@@ -151,9 +197,9 @@ export default function Contact() {
           </div>
         </footer>
 
-        {/* Big wordmark */}
-        <div className="relative -mx-6 mt-4 select-none overflow-hidden md:-mx-10">
-          <p className="font-display text-[15vw] leading-[0.82] tracking-tightest text-ink-0/95 lowercase">
+        {/* Big wordmark — flush to section bottom, no trailing space */}
+        <div className="relative -mx-6 mt-3 select-none overflow-hidden md:-mx-10">
+          <p className="font-display text-[15vw] leading-[0.78] tracking-tightest text-ink-0/95 lowercase">
             northofamer<span className="italic text-accent">.</span>
           </p>
         </div>

@@ -68,7 +68,7 @@ export default function Works() {
     <section
       id="works"
       ref={sectionRef}
-      className="relative bg-ink-900 py-28 md:py-40"
+      className="relative bg-ink-900 py-14 md:py-20"
     >
       <div className="mx-auto max-w-[1600px] px-6 md:px-10">
         {/* Oversized centered chapter word — slow scrub-tied entrance */}
@@ -93,18 +93,18 @@ export default function Works() {
         </div>
 
         {/* Grid */}
-        <div className="mt-24 grid grid-cols-1 gap-x-10 gap-y-24 md:grid-cols-12 md:gap-y-32">
+        <div className="mt-12 grid grid-cols-1 gap-x-10 gap-y-14 md:grid-cols-12 md:gap-y-20">
           {WORKS.map((w, i) => {
             // Alternating L/R column placement gives an editorial rhythm.
             // Wide columns for landscape images, narrower for portrait —
             // the natural aspect ratio drives the cell's height.
             const layouts = [
               "md:col-span-7 md:col-start-1",
-              "md:col-span-5 md:col-start-8 md:mt-32",
-              "md:col-span-6 md:col-start-2",
-              "md:col-span-5 md:col-start-8 md:mt-24",
-              "md:col-span-7 md:col-start-1",
               "md:col-span-5 md:col-start-8 md:mt-20",
+              "md:col-span-6 md:col-start-2",
+              "md:col-span-5 md:col-start-8 md:mt-14",
+              "md:col-span-7 md:col-start-1",
+              "md:col-span-5 md:col-start-8 md:mt-12",
             ];
             const side = i % 2 === 0 ? "left" : "right";
             const meta = IMG_META[w.cover] ?? { w: 4, h: 3 };
@@ -119,7 +119,7 @@ export default function Works() {
                   {/* Image frame — aspect-ratio matches the source so the
                       image is never cropped, stretched, or letter-boxed. */}
                   <div
-                    className="relative w-full overflow-hidden bg-ink-700"
+                    className="relative w-full overflow-hidden rounded-xl bg-ink-700"
                     style={{ aspectRatio: `${meta.w} / ${meta.h}` }}
                   >
                     <TiltCard className="absolute inset-0">
@@ -174,7 +174,7 @@ export default function Works() {
         </div>
 
         {/* End rule */}
-        <div className="mt-32 flex items-center justify-between border-t border-ink-0/10 pt-8 text-[11px] uppercase tracking-[0.32em] text-ink-100">
+        <div className="mt-16 flex items-center justify-between border-t border-ink-0/10 pt-8 text-[11px] uppercase tracking-[0.32em] text-ink-100">
           <span>End of selected works</span>
           <a
             href="#contact"

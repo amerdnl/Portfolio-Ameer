@@ -22,6 +22,10 @@ export default function SmoothScroll({ children }) {
     // Bridge Lenis -> ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
 
+    // Expose instance globally so PageTransition can call
+    // lenis.scrollTo(y, { immediate: true }) for reliable instant snapping.
+    window["__lenis"] = lenis;
+
     const raf = (time) => {
       lenis.raf(time * 1000);
     };
@@ -31,6 +35,7 @@ export default function SmoothScroll({ children }) {
     return () => {
       gsap.ticker.remove(raf);
       lenis.destroy();
+      window["__lenis"] = null;
     };
   }, []);
 

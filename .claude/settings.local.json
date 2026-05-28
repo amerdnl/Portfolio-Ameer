@@ -15,7 +15,13 @@
       "Bash(ls -lt \"/Users/ameerdanial/portfolio picture/\" && echo \"---\" && find ~/Pictures -name \"*.jpg\" -newer \"/Users/ameerdanial/portfolio picture/DSC08884.jpg\" 2>/dev/null | head -10)",
       "Bash(git add *)",
       "Bash(git rm *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(npx next *)",
+      "Bash(ls -la \"/Users/ameerdanial/Portfolio Ameer/public/\" | grep -i mp4 ; echo \"---\" ; cp \"/Users/ameerdanial/Downloads/Afiq and Steve.MP4\" \"/Users/ameerdanial/Portfolio Ameer/public/afiq-steve.mp4\" && ls -lah \"/Users/ameerdanial/Portfolio Ameer/public/afiq-steve.mp4\")",
+      "Bash(grep -iE '\\\\.\\(jpg|jpeg|png|heic\\)$')",
+      "Bash(find /Users/ameerdanial -maxdepth 4 -type f \\\\\\( -iname \"*.jpg\" -o -iname \"*.jpeg\" \\\\\\) -newer /tmp -mmin -120 2>/dev/null | grep -vE \"\\(node_modules|\\\\.git|Library|/Portfolio Ameer/\\)\" | head -30)",
+      "Bash(sips -g pixelWidth -g pixelHeight \"/Users/ameerdanial/Portfolio Ameer/public/drummer.jpg\")",
+      "Bash(sips -g pixelWidth -g pixelHeight \"/Users/ameerdanial/Portfolio Ameer/public/singer.jpg\")"
     ]
   }
 }

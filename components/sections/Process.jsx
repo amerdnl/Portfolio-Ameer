@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PROCESS, IMG_META } from "@/lib/data";
 import { RevealText } from "@/components/Reveal";
 import TiltCard from "@/components/TiltCard";
@@ -12,21 +11,15 @@ import SectionTitle from "@/components/SectionTitle";
 /**
  * Behind-the-scenes lineup.
  *
- * Constraint: nobody who appears in Works can appear here. The lineup
- * currently is:
- *   1. DSC07670 — pianist (curly hair)         — unique
- *   2. DSC08556 — duo (green-hijab + plaid)    — unique pair
- *   3. DSC08590 — drummer (SUDOKU kit)         — unique
- *   4. DSC08576 — guitarist (black outfit)     — unique
+ * Constraint: nobody who appears in Works can appear here. The lineup is:
+ *   1. DSC08556 — duo (green-hijab + plaid)  — unique pair
+ *   2. DSC08576 — guitarist (black outfit)   — unique
  *
- * Works uses: 08449, 08692, 07688, 08380, 07356, 08687.
- * No overlap with the four above.
+ * Works uses: 08449, 08692, 07688, 08380, 07356, 08687. No overlap.
  */
 const BTS = [
-  "/DSC07670.jpg",   // landscape — left  column
-  "/DSC08556.jpg",   // landscape — right column
-  "/DSC08590.jpg",   // landscape — left  column
-  "/DSC08576.jpg",   // landscape — right column (replaces 07674, was same person as Works 03)
+  "/DSC08556.jpg",
+  "/DSC08576.jpg",
 ];
 
 export default function Process() {
@@ -56,21 +49,18 @@ export default function Process() {
         );
       });
 
-      // BTS tiles — play-once directional slide.
+      // BTS tiles — directional slide from/to right (right-column images).
       //
-      // We deliberately don't use the scrub-based RevealSide here.
-      // The BTS column is sticky (md:sticky md:top-28), so the tile's
-      // *natural* scroll position passes the viewport long before the
-      // sticky column visually leaves — a scrub timeline would advance
-      // into its "exit" phase and animate the tile to opacity:0 while
-      // it's still pinned in view (the empty-placeholder bug).
-      //
-      // Single-shot reveal: slide in once, stay forever.
-      gsap.utils.toArray(".bts-tile").forEach((tile, i) => {
-        const fromX = i % 2 === 0 ? -110 : 110;
+      // Toggle-based (not scrub) because the column is sticky
+      // (md:sticky md:top-28): scrub progress advances relative to the
+      // tile's *natural* DOM position, which passes the viewport while
+      // the tile is still pinned in view — causing it to animate out
+      // while still visible. Toggle fires on enter/leave of the sticky
+      // container instead, which aligns with visual presence.
+      gsap.utils.toArray(".bts-tile").forEach((tile) => {
         gsap.fromTo(
           tile,
-          { x: fromX, opacity: 0 },
+          { x: 110, opacity: 0 },
           {
             x: 0,
             opacity: 1,
@@ -79,7 +69,8 @@ export default function Process() {
             scrollTrigger: {
               trigger: tile,
               start: "top 88%",
-              toggleActions: "play none none none",
+              end:   "bottom 12%",
+              toggleActions: "play reverse play reverse",
             },
           }
         );
@@ -106,7 +97,7 @@ export default function Process() {
     <section
       id="process"
       ref={ref}
-      className="relative overflow-hidden bg-ink-900 py-28 md:py-40"
+      className="relative overflow-hidden bg-ink-900 py-14 md:py-20"
     >
       <div className="mx-auto max-w-[1600px] px-6 md:px-10">
         {/* Oversized centered chapter word — slow scrub-tied entrance */}
@@ -131,14 +122,14 @@ export default function Process() {
         </div>
 
         {/* Steps + sticky image stack */}
-        <div className="mt-24 grid grid-cols-1 gap-x-10 md:grid-cols-12">
+        <div className="mt-12 grid grid-cols-1 gap-x-10 md:grid-cols-12">
           {/* Steps */}
           <div className="md:col-span-6 md:col-start-1">
             <ol className="divide-y divide-ink-0/10 border-y border-ink-0/10">
               {PROCESS.map((p) => (
                 <li
                   key={p.n}
-                  className="process-step group grid grid-cols-12 gap-6 py-10 md:py-14"
+                  className="process-step group grid grid-cols-12 gap-6 py-7 md:py-10"
                 >
                   <span className="numeral col-span-2 text-2xl text-accent md:text-3xl">
                     {p.n}
@@ -157,27 +148,20 @@ export default function Process() {
           </div>
 
           {/* Sticky behind-the-scenes column */}
-          <div className="mt-16 md:col-span-5 md:col-start-8 md:mt-0">
+          <div className="mt-10 md:col-span-5 md:col-start-8 md:mt-0">
             <div className="md:sticky md:top-28">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-10">
                 {BTS.map((src, i) => {
-                  const meta   = IMG_META[src] ?? { w: 4, h: 3 };
-                  // Stagger the right column down for an offset rhythm.
-                  const offset = i % 2 === 1 ? "mt-10" : "";
+                  const meta = IMG_META[src] ?? { w: 4, h: 3 };
 
                   return (
                     <div
                       key={src}
-                      className={`bts-tile relative w-full ${offset}`}
+                      className="bts-tile relative w-full"
                       style={{ willChange: "transform, opacity" }}
                     >
-                      {/* No ImageReveal mask here — the BTS tiles
-                          render directly so they're guaranteed
-                          visible the moment they enter the viewport.
-                          Mask-based reveals were re-hiding tiles in
-                          this sticky column. */}
                       <div
-                        className="relative w-full overflow-hidden bg-ink-700"
+                        className="relative w-full overflow-hidden rounded-xl bg-ink-700"
                         style={{ aspectRatio: `${meta.w} / ${meta.h}` }}
                       >
                         <TiltCard intensity={6} className="absolute inset-0">
@@ -189,7 +173,7 @@ export default function Process() {
                               src={src}
                               alt={`Behind the scenes ${i + 1}`}
                               fill
-                              sizes="(min-width: 768px) 22vw, 45vw"
+                              sizes="(min-width: 768px) 40vw, 90vw"
                               className="object-cover"
                             />
                           </div>

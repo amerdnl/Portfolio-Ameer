@@ -24,6 +24,7 @@ if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 export default function SectionTitle({
   children,
   variant = "outline",     // "outline" | "fill"
+  className = "",
 }) {
   const wrapRef = useRef(null);
   const textRef = useRef(null);
@@ -81,7 +82,7 @@ export default function SectionTitle({
     <div
       ref={wrapRef}
       aria-hidden
-      className="pointer-events-none relative my-14 w-full select-none overflow-hidden text-center md:my-20"
+      className={`pointer-events-none relative my-8 w-full select-none overflow-hidden text-center md:my-10 ${className}`}
     >
       <span
         ref={textRef}
