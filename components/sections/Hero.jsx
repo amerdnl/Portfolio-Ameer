@@ -181,7 +181,7 @@ export default function Hero() {
           preload="auto"
           poster="/hero.jpg"
         >
-          <source src="/afiq-steve.mp4" type="video/mp4" />
+          <source src="https://res.cloudinary.com/dk3pkt2wb/video/upload/v1779974124/afiq-steve-web_nxkj0e.mp4" type="video/mp4" />
         </video>
         <div
           ref={overlayRef}
