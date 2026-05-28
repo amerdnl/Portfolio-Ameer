@@ -21,7 +21,8 @@
       "Bash(grep -iE '\\\\.\\(jpg|jpeg|png|heic\\)$')",
       "Bash(find /Users/ameerdanial -maxdepth 4 -type f \\\\\\( -iname \"*.jpg\" -o -iname \"*.jpeg\" \\\\\\) -newer /tmp -mmin -120 2>/dev/null | grep -vE \"\\(node_modules|\\\\.git|Library|/Portfolio Ameer/\\)\" | head -30)",
       "Bash(sips -g pixelWidth -g pixelHeight \"/Users/ameerdanial/Portfolio Ameer/public/drummer.jpg\")",
-      "Bash(sips -g pixelWidth -g pixelHeight \"/Users/ameerdanial/Portfolio Ameer/public/singer.jpg\")"
+      "Bash(sips -g pixelWidth -g pixelHeight \"/Users/ameerdanial/Portfolio Ameer/public/singer.jpg\")",
+      "Bash(git fetch *)"
     ]
   }
 }
