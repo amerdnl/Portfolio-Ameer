@@ -24,7 +24,9 @@
       "Bash(sips -g pixelWidth -g pixelHeight \"/Users/ameerdanial/Portfolio Ameer/public/singer.jpg\")",
       "Bash(git fetch *)",
       "Bash(git restore *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(echo \"afiq-steve.mp4\")",
+      "Bash(git commit -m 'Remove 315MB video from git; will serve from Vercel Blob instead *)"
     ]
   }
 }
