@@ -26,7 +26,14 @@
       "Bash(git restore *)",
       "Bash(git push *)",
       "Bash(echo \"afiq-steve.mp4\")",
-      "Bash(git commit -m 'Remove 315MB video from git; will serve from Vercel Blob instead *)"
+      "Bash(git commit -m 'Remove 315MB video from git; will serve from Vercel Blob instead *)",
+      "Bash(git filter-repo *)",
+      "Bash(git filter-branch *)",
+      "Bash(git reset *)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --index-filter 'git rm --cached --ignore-unmatch public/afiq-steve.mp4' -f HEAD)",
+      "Bash(git checkout *)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --index-filter 'git rm --cached --ignore-unmatch public/afiq-steve.mp4' -f -- --all)",
+      "Bash(git commit -m 'Update hero video source to Cloudinary CDN for optimal delivery *)"
     ]
   }
 }
