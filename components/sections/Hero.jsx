@@ -30,22 +30,78 @@ export default function Hero() {
     setMuted(next);
   }, []);
 
+  // Fullscreen — desktop fullscreens the whole <section> so the headline
+  // and overlay controls stay visible. On mobile, that would lock the
+  // video in portrait orientation and shrink it — so we instead trigger
+  // fullscreen on the <video> element itself, which on iOS Safari and
+  // Android Chrome opens the OS-native video player. That player:
+  //   • auto-rotates to landscape when the device is rotated
+  //   • shows native scrub/seek/mute controls
+  //   • plays the video at full Cloudinary resolution
+  //   • exits cleanly when the user is done
+  // iOS Safari needs the webkit-prefixed call (webkitEnterFullscreen) on
+  // the <video> element specifically — its Fullscreen API support is
+  // partial and the standard requestFullscreen often silently no-ops.
   const toggleFullscreen = useCallback(async () => {
-    const el = sectionRef.current;
-    if (!el) return;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    const v   = videoRef.current;
+    const sec = sectionRef.current;
+
     try {
-      if (!document.fullscreenElement) {
-        await el.requestFullscreen?.();
+      const alreadyFullscreen =
+        document.fullscreenElement ||
+        document.webkitFullscreenElement;
+
+      if (!alreadyFullscreen) {
+        if (isMobile && v) {
+          // iOS Safari: use the video element's native player
+          if (typeof v.webkitEnterFullscreen === "function") {
+            v.webkitEnterFullscreen();
+          } else if (typeof v.requestFullscreen === "function") {
+            await v.requestFullscreen();
+          } else if (sec) {
+            await sec.requestFullscreen?.();
+          }
+        } else if (sec) {
+          // Desktop — fullscreen the whole section with overlay UI
+          await sec.requestFullscreen?.();
+        }
       } else {
-        await document.exitFullscreen?.();
+        if (typeof document.exitFullscreen === "function") {
+          await document.exitFullscreen();
+        } else if (typeof document.webkitExitFullscreen === "function") {
+          document.webkitExitFullscreen();
+        }
       }
     } catch { /* permissions or user-gesture issue */ }
   }, []);
 
   useEffect(() => {
-    const onFs = () => setIsFullscreen(Boolean(document.fullscreenElement));
+    // Listen for both the standard fullscreen event and iOS's webkit
+    // variants, otherwise the icon won't flip back to "expand" when the
+    // viewer exits the native video player by tapping "Done".
+    const onFs = () =>
+      setIsFullscreen(Boolean(
+        document.fullscreenElement || document.webkitFullscreenElement
+      ));
     document.addEventListener("fullscreenchange", onFs);
-    return () => document.removeEventListener("fullscreenchange", onFs);
+    document.addEventListener("webkitfullscreenchange", onFs);
+
+    // iOS Safari fires these on the <video> element instead of document
+    // when webkitEnterFullscreen() is used.
+    const v = videoRef.current;
+    const onVideoFs = () => setIsFullscreen(Boolean(
+      document.fullscreenElement || document.webkitFullscreenElement
+    ));
+    v?.addEventListener("webkitbeginfullscreen", () => setIsFullscreen(true));
+    v?.addEventListener("webkitendfullscreen",   () => setIsFullscreen(false));
+
+    return () => {
+      document.removeEventListener("fullscreenchange", onFs);
+      document.removeEventListener("webkitfullscreenchange", onFs);
+      v?.removeEventListener("webkitbeginfullscreen", onVideoFs);
+      v?.removeEventListener("webkitendfullscreen",   onVideoFs);
+    };
   }, []);
 
   // Triggered by the loading-screen tap (the required browser gesture).
