@@ -129,16 +129,18 @@ export default function Process() {
               {PROCESS.map((p) => (
                 <li
                   key={p.n}
-                  className="process-step group grid grid-cols-12 gap-6 py-7 md:py-10"
+                  // gap-4 (was gap-6) on mobile so the numeral column
+                  // doesn't crowd the heading on 360 px Android viewports.
+                  className="process-step group grid grid-cols-12 gap-4 py-7 md:gap-6 md:py-10"
                 >
-                  <span className="numeral col-span-2 text-2xl text-accent md:text-3xl">
+                  <span className="numeral col-span-2 text-xl text-accent sm:text-2xl md:text-3xl">
                     {p.n}
                   </span>
-                  <div className="col-span-10">
-                    <h3 className="font-display text-3xl tracking-tight text-ink-0 md:text-5xl">
+                  <div className="col-span-10 min-w-0">
+                    <h3 className="font-display text-2xl tracking-tight text-ink-0 sm:text-3xl md:text-5xl">
                       {p.title}
                     </h3>
-                    <p className="mt-4 max-w-md text-[15px] leading-relaxed text-ink-100">
+                    <p className="mt-4 max-w-md text-[14px] leading-relaxed text-ink-100 sm:text-[15px]">
                       {p.body}
                     </p>
                   </div>

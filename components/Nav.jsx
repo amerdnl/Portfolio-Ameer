@@ -40,7 +40,9 @@ export default function Nav() {
   return (
     <header
       className={clsx(
-        "fixed inset-x-0 top-0 z-50 py-4 transition-all duration-[900ms] ease-cinematic",
+        // safe-top pushes the bar below the iPhone notch / Dynamic Island
+        // so the wordmark and links never tuck under the camera cutout.
+        "safe-top fixed inset-x-0 top-0 z-50 py-4 transition-all duration-[900ms] ease-cinematic",
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none -translate-y-3 opacity-0"
@@ -86,7 +88,9 @@ export default function Nav() {
 
         <button
           onClick={() => setOpen((v) => !v)}
-          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
+          // 44 × 44 hit area meets Apple HIG and Material Design touch
+          // target minimums — easier to tap reliably on small phones.
+          className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 md:hidden"
           aria-label="Toggle menu"
         >
           <span

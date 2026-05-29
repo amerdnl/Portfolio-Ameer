@@ -254,7 +254,14 @@ export default function Hero() {
     <section
       id="top"
       ref={sectionRef}
-      className="hero-section relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-ink-900"
+      // h-[100svh]   — the *small* viewport unit, so the section measures
+      //                from the visible area (excluding the mobile URL
+      //                bar) and never overshoots into a scroll loop.
+      // min-h-[480px] — only kicks in on extreme landscape phones where
+      //                100svh would otherwise be ~330 px and squash the
+      //                whole composition. 480 still fits a 360×640 phone
+      //                in portrait without cutoff, so it's a safe floor.
+      className="hero-section relative h-[100svh] min-h-[480px] w-full overflow-hidden bg-ink-900"
     >
       {/* Background media */}
       <div ref={mediaRef} className="absolute inset-0 z-0 will-change-transform" style={{ opacity: 0 }}>
@@ -275,15 +282,17 @@ export default function Hero() {
         />
       </div>
 
-      {/* Controls — mute + fullscreen */}
-      <div className="hero-controls absolute right-6 top-6 z-20 flex items-center gap-2 md:right-10 md:top-8">
+      {/* Controls — mute + fullscreen.
+          safe-top pushes the cluster below the iPhone notch / Dynamic
+          Island so the buttons are never covered by the camera cutout. */}
+      <div className="hero-controls safe-top absolute right-6 top-6 z-20 flex items-center gap-2 md:right-10 md:top-8">
         <button
           type="button"
           onClick={toggleMute}
           aria-label={muted ? "Unmute reel audio" : "Mute reel audio"}
           aria-pressed={!muted}
           data-cursor="hover"
-          className="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-0/20 bg-ink-900/30 text-ink-0 backdrop-blur-md transition-all duration-500 hover:border-accent hover:bg-ink-900/50 md:h-11 md:w-11"
+          className="group inline-flex h-11 w-11 items-center justify-center rounded-full border border-ink-0/20 bg-ink-900/30 text-ink-0 backdrop-blur-md transition-all duration-500 hover:border-accent hover:bg-ink-900/50"
         >
           {muted ? (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
@@ -306,7 +315,7 @@ export default function Hero() {
           aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
           aria-pressed={isFullscreen}
           data-cursor="hover"
-          className="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-0/20 bg-ink-900/30 text-ink-0 backdrop-blur-md transition-all duration-500 hover:border-accent hover:bg-ink-900/50 md:h-11 md:w-11"
+          className="group inline-flex h-11 w-11 items-center justify-center rounded-full border border-ink-0/20 bg-ink-900/30 text-ink-0 backdrop-blur-md transition-all duration-500 hover:border-accent hover:bg-ink-900/50"
         >
           {isFullscreen ? (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">

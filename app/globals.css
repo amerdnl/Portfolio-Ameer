@@ -23,7 +23,38 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
   overscroll-behavior: none;
   overflow-x: clip; /* prevents horizontal scroll without breaking fixed/sticky children */
+
+  /* iOS Safari auto-inflates body text in portrait↔landscape rotation by
+     up to 30 % — kills our clamp()-tuned typography. Forces it off. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+
+  /* iOS momentum scrolling inside any inner scroll containers. */
+  -webkit-overflow-scrolling: touch;
 }
+
+/* Tap highlight on mobile is a chunky semi-transparent blue rectangle by
+   default — kills the editorial feel on every link tap. Disable globally;
+   :focus-visible (further down) gives keyboard users a real focus ring. */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Make every interactive element snappier on touch — removes the 300 ms
+   double-tap-zoom delay that older mobile browsers still apply. */
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* iPhone notch / Dynamic Island avoidance — applied only to fixed
+   chrome (Nav, in-hero controls) so the hero video can still bleed
+   edge-to-edge across the whole viewport. Anything with the
+   .safe-top class gets pushed below the notch on iPhones; safe to
+   use anywhere because it falls back to 0 on screens without insets. */
+.safe-top    { padding-top:    max(env(safe-area-inset-top),    0px); }
+.safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+.safe-right  { padding-right:  max(env(safe-area-inset-right),  0px); }
+.safe-left   { padding-left:   max(env(safe-area-inset-left),   0px); }
 
 html.lenis,
 html.lenis body {

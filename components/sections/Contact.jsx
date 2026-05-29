@@ -185,12 +185,15 @@ export default function Contact() {
                   <a
                     href={c.href}
                     data-cursor="hover"
-                    className="group flex items-center justify-between py-5 text-ink-0 transition-colors hover:text-accent"
+                    // gap-4 + min-w-0 keep the layout from breaking when
+                    // a label like "Instagram" + a long handle would
+                    // otherwise force horizontal overflow on 360 px screens.
+                    className="group flex items-center justify-between gap-4 py-5 text-ink-0 transition-colors hover:text-accent"
                   >
-                    <span className="text-[11px] uppercase tracking-[0.32em] text-ink-100 group-hover:text-accent">
+                    <span className="shrink-0 text-[11px] uppercase tracking-[0.32em] text-ink-100 group-hover:text-accent">
                       {c.label}
                     </span>
-                    <span className="font-display text-xl tracking-tight md:text-2xl">
+                    <span className="min-w-0 truncate font-display text-lg tracking-tight sm:text-xl md:text-2xl">
                       {c.value}
                     </span>
                   </a>
@@ -205,8 +208,10 @@ export default function Contact() {
           <div className="contact-rule h-px w-full origin-left bg-ink-0/15" />
         </div>
 
-        {/* Footer */}
-        <footer className="grid grid-cols-2 gap-y-8 py-10 text-[11px] uppercase tracking-[0.28em] text-ink-100 md:grid-cols-4 md:py-14">
+        {/* Footer — tighter tracking + slightly smaller text on phones
+            so the longer strings ("All Rights Reserved", the live time
+            row, etc.) stop overflowing the 2-column mobile grid. */}
+        <footer className="grid grid-cols-2 gap-x-4 gap-y-8 py-10 text-[10px] uppercase tracking-[0.18em] text-ink-100 sm:text-[11px] sm:tracking-[0.28em] md:grid-cols-4 md:py-14">
           <div>
             <p className="text-ink-0">Based in</p>
             <p className="mt-2">Shah Alam</p>
