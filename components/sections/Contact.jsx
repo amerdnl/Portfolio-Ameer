@@ -159,12 +159,16 @@ export default function Contact() {
             <a
               href="mailto:ekspresiameer@gmail.com"
               data-cursor="hover"
-              className="group inline-flex flex-wrap items-baseline gap-x-5 gap-y-2"
+              // max-w-full so the inline-flex never escapes the column,
+              // and the inner span gets break-all so the email can wrap
+              // gracefully on narrow Android viewports instead of
+              // scrolling off the right edge of the screen.
+              className="group inline-flex max-w-full flex-wrap items-baseline gap-x-5 gap-y-2"
             >
-              <span className="font-display text-[clamp(2rem,5vw,4rem)] italic tracking-tight text-ink-0 transition-colors duration-500 group-hover:text-accent">
+              <span className="font-display break-all text-[clamp(1.35rem,5vw,4rem)] italic leading-[1.1] tracking-tight text-ink-0 transition-colors duration-500 group-hover:text-accent">
                 ekspresiameer@gmail.com
               </span>
-              <span className="inline-block h-px w-16 translate-y-[-12px] bg-accent transition-all duration-500 group-hover:w-24" />
+              <span className="hidden h-px w-16 translate-y-[-12px] bg-accent transition-all duration-500 group-hover:w-24 sm:inline-block" />
             </a>
             <p className="mt-8 max-w-md text-[15px] leading-relaxed text-ink-100">
               The studio accepts a small number of commissions each year.

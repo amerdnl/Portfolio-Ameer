@@ -88,9 +88,14 @@ export default function SectionTitle({
         ref={textRef}
         className="font-display inline-block whitespace-nowrap leading-[0.82] tracking-tightest will-change-transform"
         style={{
-          // Fits within viewport at every breakpoint — narrow enough
-          // on phones to stay centered without overflow.
-          fontSize: "clamp(3.5rem, 16vw, 16rem)",
+          // clamp(min, fluid, max) — the *min* was previously 3.5rem
+          // (56px) which on 360px-wide Android phones rendered the
+          // longest chapter word ("PROCESS") about 340px wide. With
+          // page padding the title overflowed both sides and looked
+          // clipped. 2.2rem (35px) is the largest value that keeps
+          // every existing chapter word inside a 360px viewport with
+          // the 24px container padding intact.
+          fontSize: "clamp(2.2rem, 14vw, 16rem)",
           ...styleFill,
         }}
       >
